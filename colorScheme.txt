@@ -1,0 +1,10 @@
+Background: #F0F8FF (Alice Blue) or #E6F7FF (Powder Blue)
+Title Bar: #6495ED (Cornflower Blue)
+Text and Icons: #FFFFFF (White) or #D3D3D3 (Light Gray)
+Buttons:
+Regular Buttons: #4C72B0 or #4682B4
+Hovered Buttons: #5A7FB8 or #5089C1
+Sidebar: #87CEEB (Sky Blue) or #7EC8E3
+Active or Selected Items: #87CEFA (Light Sky Blue) or #77B5E7
+Accents: #1E90FF (Dodger Blue) or #3D6CB9
+Alerts or Notifications: #FF4500 (Orange-Red) for attention-grabbing alerts
