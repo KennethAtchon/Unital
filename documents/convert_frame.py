@@ -24,7 +24,8 @@ class ConvertFrame(customtkinter.CTkTabview):
         self.progressbar_1.set(0)
         self.progressbar_1.configure(mode="determinate")
     def browse_file_d2p(self):
-        file_path = filedialog.askopenfilename(title="Select a .docx File")
+        file_types = [("Doc files", ".docx")]
+        file_path = filedialog.askopenfilename(title="Select a .docx File", filetypes=file_types)
         if file_path:
             self.d2p_entry.delete(0, tk.END)  # Clear any existing text
             self.d2p_entry.insert(0, file_path)
