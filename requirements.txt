@@ -1,0 +1,5 @@
+tk
+customtkinter
+docx
+pyttsx3
+pydub

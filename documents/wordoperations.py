@@ -6,8 +6,6 @@ from difflib import Differ
 from docx import Document
 import threading
 import pyttsx3
-from pydub import AudioSegment
-from pydub.playback import play
 
 class TextOperationsFrame(customtkinter.CTkTabview):
     def __init__(self, master):
@@ -90,8 +88,7 @@ class TextOperationsFrame(customtkinter.CTkTabview):
             user_text = self.op_textbox.get("1.0", "end-1c")
         else:
             user_text = self.op_textbox.get("1.0", "end-1c") or self.read_file()
-
-        print(self.file_path)
+            self.file_path = ''
 
         output = []
 
@@ -116,7 +113,7 @@ class TextOperationsFrame(customtkinter.CTkTabview):
 
         # Create a text file with details
         text_details = "\n".join(output)
-        text_file_path = os.path.join(folder_path, 'details.txt')
+        text_file_path = os.path.join(folder_path, f'{self.file_path}details.txt')
         with open(text_file_path, 'w') as text_file:
             text_file.write(text_details)
 
@@ -137,9 +134,6 @@ class TextOperationsFrame(customtkinter.CTkTabview):
         engine.runAndWait()
 
         print(f"Speech saved to: {wav_file_path}")
-
-
-            
 
     def browse_file_1(self):
         file_types = [("Accepted Files", ".txt .docx .py .java .html .css .js"), ("Other Files", "")]
@@ -210,8 +204,6 @@ class TextOperationsFrame(customtkinter.CTkTabview):
             result_file.write('\n'.join(result_lines))
 
         print(f"Comparison results saved to: {result_file_path}")
-
-
 
     def read_file(self):
         if self.file_path:
