@@ -7,6 +7,8 @@ from docx import Document
 import threading
 import pyttsx3
 
+# add a merge
+
 class TextOperationsFrame(customtkinter.CTkTabview):
     def __init__(self, master):
         super().__init__(master, width=500)
@@ -88,7 +90,7 @@ class TextOperationsFrame(customtkinter.CTkTabview):
             user_text = self.op_textbox.get("1.0", "end-1c")
         else:
             user_text = self.op_textbox.get("1.0", "end-1c") or self.read_file()
-            self.file_path = ''
+            self.file_path = os.getcwd
 
         output = []
 
@@ -130,8 +132,12 @@ class TextOperationsFrame(customtkinter.CTkTabview):
         wav_file_path = os.path.splitext(self.file_path)[0] + '.wav'
         engine.save_to_file(user_text, wav_file_path)
 
+        # add time waiting or something
+        engine.say(user_text)
         # Wait for the speech to be generated
         engine.runAndWait()
+
+        
 
         print(f"Speech saved to: {wav_file_path}")
 

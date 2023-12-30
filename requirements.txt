@@ -1,5 +1,6 @@
 tk
 customtkinter
-docx
+python-docx
 pyttsx3
 pydub
+pyPDF2

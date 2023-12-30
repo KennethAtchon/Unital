@@ -3,6 +3,8 @@ import customtkinter
 from tkinter import filedialog
 from documents.convert_frame import ConvertFrame
 from documents.wordoperations import TextOperationsFrame
+from documents.filter import FilterFrame
+from documents.unique import UniqueFrame
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -19,8 +21,7 @@ class App(customtkinter.CTk):
         # configure grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure((2, 3), weight=0)
-        #self.grid_rowconfigure((0,1,2), weight=1)
-        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure((1), weight=1)
 
         # create sidebar frame with widgets
         self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
@@ -45,6 +46,13 @@ class App(customtkinter.CTk):
         self.tabviewframe = TextOperationsFrame(self)
         self.tabviewframe.grid(row=0, column=2, padx=(20, 20),pady=(0,10), sticky="nsew")
         
+        # Filter operations
+        self.filterframe = FilterFrame(self)
+        self.filterframe.grid(row=1, column=1, padx=(20, 0), pady=(0,10), sticky="nsew")
+
+        self.uniqueframe = UniqueFrame(self)
+        self.uniqueframe.grid(row=1, column=2, padx=(20, 20), pady=(0,10), sticky="nsew")
+
 
 
 
