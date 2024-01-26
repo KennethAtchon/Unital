@@ -7,14 +7,12 @@ from docx import Document
 import threading
 import pyttsx3
 
-# add a merge
 
 class TextOperationsFrame(customtkinter.CTkTabview):
     def __init__(self, master):
         super().__init__(master, width=500)
         self.add("TextOp")
         self.add("Compare Files")
-        self.add("Tab 3")
         self.tab("TextOp").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
         self.tab("Compare Files").grid_columnconfigure(0, weight=1)
 
@@ -39,7 +37,7 @@ class TextOperationsFrame(customtkinter.CTkTabview):
         self.op_submit = customtkinter.CTkButton(self.tab("TextOp"), text="Process Text", command=self.handle_text_ops)
         self.op_submit.grid(row=5, column=0)
 
-        self.file_path = None
+        self.file_path = os.getcwd() + "\\"
 
         # Compare Files section
         self.com_label = customtkinter.CTkLabel(self.tab("Compare Files"), text="Select two files to compare", font=customtkinter.CTkFont(size=14, weight="bold"))

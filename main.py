@@ -31,7 +31,7 @@ class App(customtkinter.CTk):
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
         self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Documents", command=self.show_documents_page)
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
-        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, text="Automation", command=self.sidebar_button_event)
+        self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, text="Automation", command=self.show_automation_page)
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
         self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, text="Trading", command=self.sidebar_button_event)
         self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
@@ -53,18 +53,35 @@ class App(customtkinter.CTk):
         self.uniqueframe = UniqueFrame(self)
         self.uniqueframe.grid(row=1, column=2, padx=(20, 20), pady=(0,10), sticky="nsew")
 
+        # Automation
+
+        
 
 
+    def forget_all(self):
+        # Hide all frames
+        self.convertframe.grid_forget()
+        self.tabviewframe.grid_forget()
+        self.filterframe.grid_forget()
+        self.uniqueframe.grid_forget()
 
     def show_documents_page(self):
-        pass
+        self.forget_all()
 
+        self.convertframe.grid(row=0, column=1, padx=(20, 0), pady=(0,10), sticky="nsew")
+        self.tabviewframe.grid(row=0, column=2, padx=(20, 20),pady=(0,10), sticky="nsew")
+        self.filterframe.grid(row=1, column=1, padx=(20, 0), pady=(0,10), sticky="nsew")
+        self.uniqueframe.grid(row=1, column=2, padx=(20, 20), pady=(0,10), sticky="nsew")
 
+    def show_automation_page(self):
+        self.forget_all()
 
+        
     def sidebar_button_event(self):
         print("sidebar_button click")
 
 
 if __name__ == "__main__":
+
     app = App()
     app.mainloop()

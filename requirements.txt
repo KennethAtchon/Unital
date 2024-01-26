@@ -4,3 +4,6 @@ python-docx
 pyttsx3
 pydub
 pyPDF2
+nltk
+wordcloud
+matplotlib
