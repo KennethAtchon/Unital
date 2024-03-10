@@ -5,6 +5,8 @@ from documents.convert_frame import ConvertFrame
 from documents.wordoperations import TextOperationsFrame
 from documents.filter import FilterFrame
 from documents.unique import UniqueFrame
+from automation.automation import AutomationFrame
+
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -54,7 +56,7 @@ class App(customtkinter.CTk):
         self.uniqueframe.grid(row=1, column=2, padx=(20, 20), pady=(0,10), sticky="nsew")
 
         # Automation
-
+        self.automationframe = AutomationFrame(self)
         
 
 
@@ -64,6 +66,7 @@ class App(customtkinter.CTk):
         self.tabviewframe.grid_forget()
         self.filterframe.grid_forget()
         self.uniqueframe.grid_forget()
+        self.automationframe.grid_forget()
 
     def show_documents_page(self):
         self.forget_all()
@@ -75,6 +78,7 @@ class App(customtkinter.CTk):
 
     def show_automation_page(self):
         self.forget_all()
+        self.automationframe.grid(row=0, column=1, rowspan=2, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
         
     def sidebar_button_event(self):
