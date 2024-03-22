@@ -20,6 +20,8 @@ class App(customtkinter.CTk):
         self.title("Unital")
         self.geometry(f"{1100}x{580}")
 
+        self.settings_window = None
+
         # configure grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure((2, 3), weight=0)
@@ -37,8 +39,11 @@ class App(customtkinter.CTk):
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
         self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, text="Trading", command=self.sidebar_button_event)
         self.sidebar_button_3.grid(row=3, column=0, padx=20, pady=10)
-        self.sidebar_button_4 = customtkinter.CTkButton(self.sidebar_frame, text="Setting", command=self.sidebar_button_event)
-        self.sidebar_button_4.grid(row=7, column=0, padx=20, pady=20)
+
+        self.settings_button = customtkinter.CTkButton(
+            self.sidebar_frame, text="Settings", command=self.open_settings_window
+        )
+        self.settings_button.grid(row=7, column=0, padx=20, pady=20)
 
         # Convert docx to pdf 
         self.convertframe = ConvertFrame(self)
@@ -83,6 +88,48 @@ class App(customtkinter.CTk):
         
     def sidebar_button_event(self):
         print("sidebar_button click")
+
+    def open_settings_window(self):
+        if not self.settings_window or not self.settings_window.winfo_exists():
+            self.settings_window = SettingsWindow(self)
+        self.settings_window.lift()  # Brings the SettingsWindow to the top
+        self.settings_window.focus_force()  # Forces focus on the SettingsWindow
+
+
+class SettingsWindow(customtkinter.CTkToplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.title("Settings")
+        self.geometry("400x300")
+        self.configure(bg='grey')
+
+        # Set the window to be always on top
+        self.attributes('-topmost', True)
+        self.after(500, lambda: self.attributes('-topmost', False))  # 
+        
+        
+        settings_frame = customtkinter.CTkFrame(self)
+        settings_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+
+        # Theme selector option
+        theme_selector_label = customtkinter.CTkLabel(settings_frame, text="Select theme:")
+        theme_selector_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+
+        theme_selector = customtkinter.CTkOptionMenu(
+            settings_frame, values=["Light", "Dark", "System"], command=self.change_theme
+        )
+        theme_selector.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+
+        # Install NLTK option with a switch
+        nltk_label = customtkinter.CTkLabel(settings_frame, text="Install NLTK:")
+        nltk_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+
+        nltk_switch = customtkinter.CTkSwitch(settings_frame, text="")
+        nltk_switch.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+
+    def change_theme(self, theme):
+        customtkinter.set_appearance_mode(theme)
 
 
 if __name__ == "__main__":

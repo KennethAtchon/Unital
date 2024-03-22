@@ -11,19 +11,19 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
 # Global variable to indicate if NLTK resources are downloaded
-nltk_resources_downloaded = False
+download_ntlk = False
 
 def download_nltk_resources():
-    global nltk_resources_downloaded
+    global download_ntlk
     # Check if 'wordnet' and 'words' are already downloaded
-    try:
-        nltk.data.find('corpora/wordnet.zip')
-        nltk.data.find('corpora/words.zip')
-    except LookupError:
-        print("Downloading NLTK resources...")
-        nltk.download('wordnet')
-        nltk.download('words')
-    nltk_resources_downloaded = True
+    if download_ntlk:
+        try:
+            nltk.data.find('corpora/wordnet.zip')
+            nltk.data.find('corpora/words.zip')
+        except LookupError:
+            print("Downloading NLTK resources...")
+            nltk.download('wordnet')
+            nltk.download('words')
 
 # Call the function to download NLTK resources at the start
 download_nltk_resources()
@@ -50,7 +50,7 @@ class UniqueFrame(customtkinter.CTkTabview):
         self.file_path = os.getcwd() + "\\"
 
         # Disable functionality if NLTK resources are not downloaded yet
-        if not nltk_resources_downloaded:
+        if not download_ntlk:
             self.disable_functionality()
 
     def disable_functionality(self):
@@ -59,7 +59,7 @@ class UniqueFrame(customtkinter.CTkTabview):
 
 
     def generate_wc(self):
-        if not nltk_resources_downloaded:
+        if not download_ntlk:
             print("NLTK resources not available. Please wait for the download to complete.")
             return
         synonyms = set()
