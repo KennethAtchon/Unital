@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import PhotoImage
 from PIL import Image
+import tkinter.filedialog as fd
 
 
 class AutomationFrame(customtkinter.CTkFrame):
@@ -15,34 +16,38 @@ class AutomationFrame(customtkinter.CTkFrame):
         self.configure(corner_radius=10)  # Customize appearance
         self.grid_columnconfigure((0, 1, 2, 3, 4, 5), weight=1)
 
-        self.grid_rowconfigure((0,1,2,3,4,5,6), weight=0)
+        self.grid_rowconfigure((0,1,2,3,4,5,6,7), weight=0)
         
-        # Add a 'Save' button to the left
-        self.save_button = customtkinter.CTkButton(self, text="Save", command=self.on_save_click, width=100, height=40, corner_radius=10)
-        self.save_button.grid(row=0, column=0, padx=(40,0), pady=10, sticky="nw")
+
+        self.save_button = customtkinter.CTkButton(self, text="Save", command=self.on_save_click, width=80, height=40, corner_radius=10)
+        self.save_button.grid(row=0, column=0, padx=(10,0), pady=10, sticky="ns")
+        
+        self.open_button = customtkinter.CTkButton(self, text="Open", command=self.on_open_click, width=80, height=40, corner_radius=10)
+        self.open_button.grid(row=0, column=1, pady=10, sticky="ns")
+
 
         self.separator1 = ttk.Separator(self, orient='vertical', style='Grey.TSeparator')
-        self.separator1.grid(row=0, column=1, sticky='ns')
+        self.separator1.grid(row=0, column=2, sticky='ns')
 
         # Create clickable title buttons for the sections
         self.record_button = customtkinter.CTkButton(self, text="Record", command=self.on_record_click, width=120, height=40, corner_radius=10)
-        self.record_button.grid(row=0, column=2, padx=10, pady=5)
+        self.record_button.grid(row=0, column=3, padx=10, pady=5)
         
         self.smart_click_button = customtkinter.CTkButton(self, text="Smart Click", command=self.on_smart_click, width=120, height=40, corner_radius=10)
-        self.smart_click_button.grid(row=0, column=3, padx=10, pady=5)
+        self.smart_click_button.grid(row=0, column=4, padx=10, pady=5)
         
         self.play_button = customtkinter.CTkButton(self, text="Play", command=self.on_play_click, width=120, height=40, corner_radius=10)
-        self.play_button.grid(row=0, column=4, padx=10, pady=5)
+        self.play_button.grid(row=0, column=5, padx=10, pady=5)
 
         self.separator2 = ttk.Separator(self, orient='vertical', style='Grey.TSeparator')
-        self.separator2.grid(row=0, column=5, sticky='ns')
+        self.separator2.grid(row=0, column=6, sticky='ns')
 
         # Add a 'Delete' button to the right
         self.delete_button = customtkinter.CTkButton(self, text="Delete", command=self.on_delete_click, width=100, height=40, corner_radius=10)
-        self.delete_button.grid(row=0, column=6, padx=10, pady=10, sticky="ne")
+        self.delete_button.grid(row=0, column=7, padx=10, pady=10, sticky="ne")
 
         self.bottom_separator = ttk.Separator(self, orient='horizontal', style='Grey.TSeparator')
-        self.bottom_separator.grid(row=1, column=0, columnspan=7, sticky='ew')
+        self.bottom_separator.grid(row=1, column=0, columnspan= 8, sticky='ew')
 
         self.sidebar_frame = customtkinter.CTkFrame(self, corner_radius=10)
         self.sidebar_frame.grid(row=2, column=0, padx=10, pady=10, sticky='nsew', rowspan = 5)
@@ -65,8 +70,8 @@ class AutomationFrame(customtkinter.CTkFrame):
         self.main_section_top = customtkinter.CTkFrame(self, corner_radius=10)
         self.main_section_bottom = customtkinter.CTkFrame(self, corner_radius=10)
 
-        self.main_section_top.grid(row=2, column=1, padx=10, pady=10, sticky="nsew", rowspan=4, columnspan = 6)  # This section is three times larger
-        self.main_section_bottom.grid(row=6, column=1, padx=10, pady=10, sticky="nsew", rowspan=1, columnspan = 6)  # This section is the smaller one
+        self.main_section_top.grid(row=2, column=1, padx=10, pady=10, sticky="nsew", rowspan=4, columnspan = 7)  # This section is three times larger
+        self.main_section_bottom.grid(row=6, column=1, padx=10, pady=10, sticky="nsew", rowspan=1, columnspan = 7)  # This section is the smaller one
 
         self.grid_columnconfigure(1, weight=3)  # This column will contain the two main sections
 
@@ -116,8 +121,31 @@ class AutomationFrame(customtkinter.CTkFrame):
         # Add functionality for play button click here
 
     def on_save_click(self):
-        print("Save button clicked")
-        # Add functionality for save button click here
+        # Get the content from the text box or another source
+        content = self.textbox.get("1.0", tk.END)
+
+        # Ask the user where to save the file
+        file_path = fd.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+
+        # Save the file if a path was selected
+        if file_path:
+            with open(file_path, 'w') as file:
+                file.write(content)
+            print(f"File saved at {file_path}")
+
+    def on_open_click(self):
+        # Ask the user to select a file to open
+        file_path = fd.askopenfilename(filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+
+        # Open and read the file if a path was selected
+        if file_path:
+            with open(file_path, 'r') as file:
+                content = file.read()
+                self.textbox.configure(state='normal')
+                self.textbox.delete("1.0", tk.END)  # Clear existing content
+                self.textbox.insert("1.0", content)  # Insert new content
+                self.textbox.configure(state='disabled')
+            print(f"File opened from {file_path}")
 
     def on_delete_click(self):
         print("Delete button clicked")

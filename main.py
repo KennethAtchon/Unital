@@ -16,6 +16,8 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
+        self.nltk_installed = False  
+
         # configure window
         self.title("Unital")
         self.geometry(f"{1100}x{580}")
@@ -95,6 +97,10 @@ class App(customtkinter.CTk):
         self.settings_window.lift()  # Brings the SettingsWindow to the top
         self.settings_window.focus_force()  # Forces focus on the SettingsWindow
 
+    def update_nltk_installed(self, installed):
+        self.nltk_installed = installed
+        # Here, pass the updated value to the UniqueFrame instance
+        self.uniqueframe.update_nltk_status(installed)
 
 class SettingsWindow(customtkinter.CTkToplevel):
     def __init__(self, parent):
@@ -104,32 +110,42 @@ class SettingsWindow(customtkinter.CTkToplevel):
         self.geometry("400x300")
         self.configure(bg='grey')
 
+        self.parent = parent 
+
         # Set the window to be always on top
         self.attributes('-topmost', True)
         self.after(500, lambda: self.attributes('-topmost', False))  # 
         
         
-        settings_frame = customtkinter.CTkFrame(self)
-        settings_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+        self.settings_frame = customtkinter.CTkFrame(self)
+        self.settings_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 
         # Theme selector option
-        theme_selector_label = customtkinter.CTkLabel(settings_frame, text="Select theme:")
-        theme_selector_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        self.theme_selector_label = customtkinter.CTkLabel(self.settings_frame, text="Select theme:")
+        self.theme_selector_label.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
         theme_selector = customtkinter.CTkOptionMenu(
-            settings_frame, values=["Light", "Dark", "System"], command=self.change_theme
+            self.settings_frame, values=["Light", "Dark", "System"], command=self.change_theme
         )
         theme_selector.grid(row=0, column=1, padx=10, pady=10, sticky="w")
 
         # Install NLTK option with a switch
-        nltk_label = customtkinter.CTkLabel(settings_frame, text="Install NLTK:")
-        nltk_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
+        self.nltk_label = customtkinter.CTkLabel(self.settings_frame, text="Install NLTK:")
+        self.nltk_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 
-        nltk_switch = customtkinter.CTkSwitch(settings_frame, text="")
-        nltk_switch.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+        self.nltk_switch = customtkinter.CTkSwitch(self.settings_frame, text="", command=self.toggle_nltk)
+        self.nltk_switch.grid(row=1, column=1, padx=10, pady=10, sticky="w")
 
     def change_theme(self, theme):
         customtkinter.set_appearance_mode(theme)
+
+    def toggle_nltk(self):
+        nltk_status = self.nltk_switch.get()
+        if nltk_status == 0:
+            nltk_status = False
+        else:
+            nltk_status = True
+        self.parent.update_nltk_installed(nltk_status)
 
 
 if __name__ == "__main__":

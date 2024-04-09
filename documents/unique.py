@@ -10,27 +10,16 @@ from nltk.corpus import words
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
-# Global variable to indicate if NLTK resources are downloaded
-download_ntlk = False
-
 def download_nltk_resources():
-    global download_ntlk
-    # Check if 'wordnet' and 'words' are already downloaded
-    if download_ntlk:
-        try:
-            nltk.data.find('corpora/wordnet.zip')
-            nltk.data.find('corpora/words.zip')
-        except LookupError:
-            print("Downloading NLTK resources...")
-            nltk.download('wordnet')
-            nltk.download('words')
-
-# Call the function to download NLTK resources at the start
-download_nltk_resources()
+    print("Downloading NLTK resources...")
+    nltk.download('wordnet')
+    nltk.download('words')
 
 class UniqueFrame(customtkinter.CTkTabview):
-    def __init__(self, master):
+    def __init__(self, master, nltk_installed=False):
         super().__init__(master, width=250)
+        self.nltk_installed = nltk_installed 
+
         self.add("Word Cloud")
         self.tab("Word Cloud").grid_columnconfigure(0, weight=1)
         
@@ -50,18 +39,17 @@ class UniqueFrame(customtkinter.CTkTabview):
         self.file_path = os.getcwd() + "\\"
 
         # Disable functionality if NLTK resources are not downloaded yet
-        if not download_ntlk:
+        if not self.nltk_installed:
             self.disable_functionality()
+        else:
+            # If nltk_installed is True, download resources immediately
+            download_nltk_resources()
 
     def disable_functionality(self):
         # Disable the submit button and adjust its text to indicate disabled state
         self.wc_submit.configure(state="disabled", text="Downloading NLTK...")
 
-
     def generate_wc(self):
-        if not download_ntlk:
-            print("NLTK resources not available. Please wait for the download to complete.")
-            return
         synonyms = set()
         words1 = self.wc_textbox.get("1.0", tk.END).strip()
         input_words = words1.split(',')
@@ -87,4 +75,21 @@ class UniqueFrame(customtkinter.CTkTabview):
         plt.axis('off')
         plt.savefig(self.file_path + "\\WorldCloud")
         plt.show()
+
+    def update_nltk_status(self, installed):
+        self.nltk_installed = installed
+        if installed:
+            download_nltk_resources()
+            self.enable_functionality()  # You might need to implement this method
+        else:
+            self.disable_functionality()
+
+    def disable_functionality(self):
+        # Method to disable functionality if NLTK resources are not downloaded
+        print("Disabling")
+        self.wc_submit.configure(state="disabled", text="Downloading NLTK...")
+
+    # Implement the enable functionality method to re-enable the UI components
+    def enable_functionality(self):
+        self.wc_submit.configure(state="normal", text="Submit")
 

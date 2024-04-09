@@ -1,0 +1,13 @@
+
+Ex: 1. -c "Command" -d "Delay"
+
+GUI Unital Format
+Record- custom entry with its own ID indicating recording
+Smart Click-regular entry
+Play - runs the program
+
+
+1. Unital -c "Category" ex: Mouse, keyboard, Smart_click, Record 
+-a (agruments) -d (delay)
+
+add If statements and for loops
