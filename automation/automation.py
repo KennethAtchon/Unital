@@ -16,15 +16,13 @@ class AutomationFrame(customtkinter.CTkFrame):
         self.configure(corner_radius=10)  # Customize appearance
         self.grid_columnconfigure((0, 1, 2, 3, 4, 5), weight=1)
 
-        self.grid_rowconfigure((0,1,2,3,4,5,6,7), weight=0)
-        
+        self.grid_rowconfigure((0,1,2,3,4,5,6,7), weight=0)  
 
         self.save_button = customtkinter.CTkButton(self, text="Save", command=self.on_save_click, width=80, height=40, corner_radius=10)
         self.save_button.grid(row=0, column=0, padx=(10,0), pady=10, sticky="ns")
         
         self.open_button = customtkinter.CTkButton(self, text="Open", command=self.on_open_click, width=80, height=40, corner_radius=10)
         self.open_button.grid(row=0, column=1, pady=10, sticky="ns")
-
 
         self.separator1 = ttk.Separator(self, orient='vertical', style='Grey.TSeparator')
         self.separator1.grid(row=0, column=2, sticky='ns')
@@ -53,12 +51,12 @@ class AutomationFrame(customtkinter.CTkFrame):
         self.sidebar_frame.grid(row=2, column=0, padx=10, pady=10, sticky='nsew', rowspan = 5)
         self.grid_rowconfigure(2, weight=1)
 
-        options1 = ["Option 1-1", "Option 1-2", "Option 1-3"]
+        options1 = ["Mouse", "Left Click", "Right Click","Double Click", "Mouse Position", "Scroll"]
         options2 = ["Option 2-1", "Option 2-2", "Option 2-3"]
         options3 = ["Option 3-1", "Option 3-2", "Option 3-3"]
 
         # Create option menus and add them to the sidebar frame
-        self.option_menu1 = customtkinter.CTkOptionMenu(self.sidebar_frame, values=options1, width=90)
+        self.option_menu1 = customtkinter.CTkOptionMenu(self.sidebar_frame, values=options1, command=self.option_menu1_callback, width=90)
         self.option_menu1.grid(row=1, column=0, padx=12.5, pady=30, sticky='nw')
 
         self.option_menu2 = customtkinter.CTkOptionMenu(self.sidebar_frame, values=options2, width=90)
@@ -106,6 +104,8 @@ class AutomationFrame(customtkinter.CTkFrame):
         self.textbox = customtkinter.CTkTextbox(self.main_section_top)
         self.textbox.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
         self.textbox.configure(state='disabled')
+
+        self.linenumber = 1
         
         # Method placeholders for button click events
     def on_record_click(self):
@@ -147,6 +147,18 @@ class AutomationFrame(customtkinter.CTkFrame):
                 self.textbox.configure(state='disabled')
             print(f"File opened from {file_path}")
 
+
+            lines = content.split('\n')
+            print(lines)
+            last_sentence =  lines[-1]
+            words = last_sentence.split()
+            if words:
+                first_word = words[0]
+                print(f"First word from the last sentence: {first_word}")
+                self.linenumber = int(first_word[0: len(first_word) - 1]) + 1
+                print(self.linenumber)
+            
+
     def on_delete_click(self):
         print("Delete button clicked")
         # Add functionality for delete button click here
@@ -176,3 +188,13 @@ class AutomationFrame(customtkinter.CTkFrame):
     def on_play_option_change(self):
         print(f"Selected play option: {self.radio_var.get()}")
         # Add functionality here based on the value of self.radio_var
+
+    #1. Unital -c "Category" ex: Mouse, keyboard, Smart_click, Record 
+    #-a (agruments) -d (delay)
+
+    def option_menu1_callback(self, choice):
+        print("I pick: ", choice)
+
+        self.textbox.configure(state='normal')
+        self.textbox.insert("1.0", str(self.linenumber) + ". Unital -c " + choice + " -a agruments -d delay ")  # Insert new content
+        self.textbox.configure(state='disabled')
