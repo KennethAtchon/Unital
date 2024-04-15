@@ -114,9 +114,7 @@ class SettingsWindow(customtkinter.CTkToplevel):
 
         # Set the window to be always on top
         self.attributes('-topmost', True)
-        self.after(500, lambda: self.attributes('-topmost', False))  # 
-        
-        
+
         self.settings_frame = customtkinter.CTkFrame(self)
         self.settings_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 

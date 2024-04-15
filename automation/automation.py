@@ -4,7 +4,7 @@ from tkinter import ttk
 from tkinter import PhotoImage
 from PIL import Image
 import tkinter.filedialog as fd
-
+from tkinter import messagebox
 
 class AutomationFrame(customtkinter.CTkFrame):
     def __init__(self, master, *args, **kwargs):
@@ -194,7 +194,122 @@ class AutomationFrame(customtkinter.CTkFrame):
 
     def option_menu1_callback(self, choice):
         print("I pick: ", choice)
+        self.open_input_dialog_event(choice)
+
+    def open_input_dialog_event(self, choice):
+        delay = "None"
+        argument = "None"
+        if choice == "Left Click":
+            dialog = customtkinter.CTkInputDialog(text="Delay(ms):", title="Left Click")
+            delay = dialog.get_input()
+
+            if delay is None:
+                return
+            if not self.validate_number(delay):
+                return
+
+        elif choice == "Right Click":
+            dialog = customtkinter.CTkInputDialog(text="Delay(ms):", title="Right Click")
+
+            delay = dialog.get_input()
+            if delay is None:
+                return
+            if not self.validate_number(delay):
+                return
+
+        elif choice == "Double Click":
+            dialog = customtkinter.CTkInputDialog(text="Delay(ms):", title="Double Click")
+
+            delay = dialog.get_input()
+            if delay is None:
+                return
+            if not self.validate_number(delay):
+                return
+
+        elif choice == "Mouse Position":    
+            dialog = MousePositionDialog(self)
+            self.wait_window(dialog)  # Wait until the dialog is closed
+            if hasattr(dialog, "argument"):
+                argument = dialog.argument
+                delay = dialog.delay
+            else:
+                return  # Return without inserting into the textbox if dialog didn't set argument and delay
+
+        elif choice == "Scroll":
+            
+            dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
+            print("CTkInputDialog:", dialog.get_input())
+
 
         self.textbox.configure(state='normal')
-        self.textbox.insert("1.0", str(self.linenumber) + ". Unital -c " + choice + " -a agruments -d delay ")  # Insert new content
+        self.textbox.insert(f"{self.linenumber}.0", str(self.linenumber) + ". Unital -c " + choice + " -a " + argument + " -d " + delay + "\n")  # Insert new content
+        self.linenumber += 1
         self.textbox.configure(state='disabled')
+
+    def validate_number(self, input_text):
+        try:
+            int(input_text)
+            return True
+        except ValueError:
+            messagebox.showerror("Invalid Input", "Please enter a valid number.")
+            return False
+    def alert_user_argument(self, alert):
+        messagebox.showerror("Invalid Input", f"Please enter a valid number for {alert}")
+
+        
+class MousePositionDialog(customtkinter.CTkToplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.geometry("400x250")
+        self.title("Mouse Position") 
+        self.attributes('-topmost', True)
+
+        label_x = customtkinter.CTkLabel(self, text="X Position:")
+        label_x.grid(row=0, column=0, padx=10, pady=5, sticky="w")
+
+        self.entry_x = customtkinter.CTkEntry(self)
+        self.entry_x.grid(row=0, column=1, padx=10, pady=5, sticky="w")
+
+        label_y = customtkinter.CTkLabel(self, text="Y Position:")
+        label_y.grid(row=1, column=0, padx=10, pady=5, sticky="w")
+
+        self.entry_y = customtkinter.CTkEntry(self)
+        self.entry_y.grid(row=1, column=1, padx=10, pady=5, sticky="w")
+
+        label_delay = customtkinter.CTkLabel(self, text="Delay (ms):")
+        label_delay.grid(row=2, column=0, padx=10, pady=5, sticky="w")
+
+        self.entry_delay = customtkinter.CTkEntry(self)
+        self.entry_delay.grid(row=2, column=1, padx=10, pady=5, sticky="w")
+
+        button_search = customtkinter.CTkButton(self, text="Search Position", command=self.handle_search)
+        button_search.grid(row=3, column=0, padx=10, pady=(20, 0), sticky="w")
+
+        button_ok = customtkinter.CTkButton(self, text="OK", command=self.handle_ok)
+        button_ok.grid(row=4, column=0, padx=10, pady=(10, 0), sticky="w")
+
+        button_cancel = customtkinter.CTkButton(self, text="Cancel", command=self.destroy)
+        button_cancel.grid(row=4, column=1, padx=10, pady=(10, 0), sticky="w")
+
+    def handle_ok(self):
+        x_pos = self.entry_x.get()
+        y_pos = self.entry_y.get()
+        delay = self.entry_delay.get()
+        self.argument = f"({x_pos}, {y_pos})" if x_pos.isdigit() and y_pos.isdigit() else "None"
+
+        if self.argument == "None":
+            self.master.alert_user_argument("position x and y.")
+            self.destroy()
+            return
+
+        if self.master.validate_number(delay):
+            self.delay = delay
+            print("X Position:", x_pos)
+            print("Y Position:", y_pos)
+            print("Delay:", delay)
+            print("Argument:", self.argument)
+            self.destroy()
+
+    def handle_search(self):
+        # Add search logic here
+        pass
