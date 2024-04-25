@@ -5,7 +5,8 @@ from tkinter import PhotoImage
 from PIL import Image
 import tkinter.filedialog as fd
 from tkinter import messagebox
-from automation.mouseClass import MousePositionDialog, MouseScrollDialog
+from automation.classFiles.mouseClass import MousePositionDialog, MouseScrollDialog
+from automation.classFiles.keyboardClass import KeyStroke
 
 class AutomationFrame(customtkinter.CTkFrame):
     def __init__(self, master, *args, **kwargs):
@@ -53,14 +54,14 @@ class AutomationFrame(customtkinter.CTkFrame):
         self.grid_rowconfigure(2, weight=1)
 
         options1 = ["Mouse", "Left Click", "Right Click","Double Click", "Mouse Position", "Scroll"]
-        options2 = ["Option 2-1", "Option 2-2", "Option 2-3"]
-        options3 = ["Option 3-1", "Option 3-2", "Option 3-3"]
+        options2 = ["Keyboard", "Keystroke", "Type", "Keydown", "Keyup"]
+        options3 = ["Operators", "If", "For"]
 
         # Create option menus and add them to the sidebar frame
         self.option_menu1 = customtkinter.CTkOptionMenu(self.sidebar_frame, values=options1, command=self.option_menu1_callback, width=90)
         self.option_menu1.grid(row=1, column=0, padx=12.5, pady=30, sticky='nw')
 
-        self.option_menu2 = customtkinter.CTkOptionMenu(self.sidebar_frame, values=options2, width=90)
+        self.option_menu2 = customtkinter.CTkOptionMenu(self.sidebar_frame, values=options2, width=90, command=self.option_menu2_callback)
         self.option_menu2.grid(row=2, column=0, padx=12.5, pady=30, sticky='nw')
 
         self.option_menu3 = customtkinter.CTkOptionMenu(self.sidebar_frame, values=options3, width=90)
@@ -200,28 +201,11 @@ class AutomationFrame(customtkinter.CTkFrame):
     def open_input_dialog_event(self, choice):
         delay = "None"
         argument = "None"
-        if choice == "Left Click":
+
+        if choice == "Left Click" or choice == "Right Click" or choice == "Double Click":
             dialog = customtkinter.CTkInputDialog(text="Delay(ms):", title="Left Click")
             delay = dialog.get_input()
 
-            if delay is None:
-                return
-            if not self.validate_number(delay):
-                return
-
-        elif choice == "Right Click":
-            dialog = customtkinter.CTkInputDialog(text="Delay(ms):", title="Right Click")
-
-            delay = dialog.get_input()
-            if delay is None:
-                return
-            if not self.validate_number(delay):
-                return
-
-        elif choice == "Double Click":
-            dialog = customtkinter.CTkInputDialog(text="Delay(ms):", title="Double Click")
-
-            delay = dialog.get_input()
             if delay is None:
                 return
             if not self.validate_number(delay):
@@ -240,7 +224,7 @@ class AutomationFrame(customtkinter.CTkFrame):
             
             dialog = MouseScrollDialog(self)
             self.wait_window(dialog)  # Wait until the dialog is closed
-            if hasattr(dialog, "argument") and dialog.argument is not "None" and delay is not "None":
+            if hasattr(dialog, "argument") and dialog.argument != "None" and delay != "None":
                 argument = dialog.argument
                 delay = dialog.delay
             else:
@@ -265,4 +249,41 @@ class AutomationFrame(customtkinter.CTkFrame):
     def alert_user_argument(self, alert):
         messagebox.showerror("Invalid Input", f"Please enter a valid number for {alert}")
 
+
+    def option_menu2_callback(self, choice):
+        print("I pick: ", choice)
+        self.open_input2_dialog_event(choice)
+
+    def open_input2_dialog_event(self, choice):
+        delay = "None"
+        argument = "None"
+
+        if choice == "Keystroke":
+            dialog = KeyStroke(self)
+            self.wait_window(dialog)  # Wait until the dialog is closed
+            if hasattr(dialog, "argument") and dialog.argument != "None" and delay != "None":
+                argument = dialog.argument
+                delay = dialog.delay
+            else:
+                return  # Return without inserting into the textbox if dialog didn't set argument and delay
+
+        elif choice == "Type":
+           pass
+
+        elif choice == "Keydown" or choice == "Keyup":
+            dialog = customtkinter.CTkInputDialog(text="Delay(ms):", title="Left Click")
+            delay = dialog.get_input()
+
+            if delay is None:
+                return
+            if not self.validate_number(delay):
+                return
+        else:
+            return
+
+
+        self.textbox.configure(state='normal')
+        self.textbox.insert(f"{self.linenumber}.0", str(self.linenumber) + ". Unital -c " + choice + " -a " + argument + " -d " + delay + "\n")  # Insert new content
+        self.linenumber += 1
+        self.textbox.configure(state='disabled')
         
