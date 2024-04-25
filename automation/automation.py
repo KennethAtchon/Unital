@@ -6,7 +6,7 @@ from PIL import Image
 import tkinter.filedialog as fd
 from tkinter import messagebox
 from automation.classFiles.mouseClass import MousePositionDialog, MouseScrollDialog
-from automation.classFiles.keyboardClass import KeyStroke
+from automation.classFiles.keyboardClass import KeyStroke, KeyType
 
 class AutomationFrame(customtkinter.CTkFrame):
     def __init__(self, master, *args, **kwargs):
@@ -64,7 +64,7 @@ class AutomationFrame(customtkinter.CTkFrame):
         self.option_menu2 = customtkinter.CTkOptionMenu(self.sidebar_frame, values=options2, width=90, command=self.option_menu2_callback)
         self.option_menu2.grid(row=2, column=0, padx=12.5, pady=30, sticky='nw')
 
-        self.option_menu3 = customtkinter.CTkOptionMenu(self.sidebar_frame, values=options3, width=90)
+        self.option_menu3 = customtkinter.CTkOptionMenu(self.sidebar_frame, values=options3, width=90, command=self.option_menu3_callback)
         self.option_menu3.grid(row=3, column=0, padx=12.5, pady=30, sticky='nw')
 
         self.main_section_top = customtkinter.CTkFrame(self, corner_radius=10)
@@ -163,7 +163,18 @@ class AutomationFrame(customtkinter.CTkFrame):
 
     def on_delete_click(self):
         print("Delete button clicked")
-        # Add functionality for delete button click here
+        if hasattr(self, 'linenumber') and isinstance(self.linenumber, int) and self.linenumber > 1:
+            self.textbox.configure(state='normal')
+            self.linenumber -= 1  # Decrement the linenumber 
+            print(self.linenumber)
+            self.textbox.delete(f"{self.linenumber}.0", tk.END)  # Clear content from linenumber to the end
+            self.textbox.insert(f"{self.linenumber}.0", "\n")  # Consumer
+            self.textbox.configure(state='disabled')
+
+            print(f"Deleted content from line {self.linenumber} onwards")
+        else:
+            print("No linenumber available, invalid linenumber type, or line number is 1")
+
     
     # Placeholders for functions to be bound to the new GUI elements
 
@@ -224,7 +235,7 @@ class AutomationFrame(customtkinter.CTkFrame):
             
             dialog = MouseScrollDialog(self)
             self.wait_window(dialog)  # Wait until the dialog is closed
-            if hasattr(dialog, "argument") and dialog.argument != "None" and delay != "None":
+            if hasattr(dialog, "argument") and dialog.argument != "None":
                 argument = dialog.argument
                 delay = dialog.delay
             else:
@@ -235,6 +246,7 @@ class AutomationFrame(customtkinter.CTkFrame):
 
 
         self.textbox.configure(state='normal')
+        print("Line #", self.linenumber)
         self.textbox.insert(f"{self.linenumber}.0", str(self.linenumber) + ". Unital -c " + choice + " -a " + argument + " -d " + delay + "\n")  # Insert new content
         self.linenumber += 1
         self.textbox.configure(state='disabled')
@@ -261,14 +273,23 @@ class AutomationFrame(customtkinter.CTkFrame):
         if choice == "Keystroke":
             dialog = KeyStroke(self)
             self.wait_window(dialog)  # Wait until the dialog is closed
-            if hasattr(dialog, "argument") and dialog.argument != "None" and delay != "None":
+            if hasattr(dialog, "argument") and dialog.argument != "None":
+                argument = dialog.argument
+                delay = dialog.delay
+            else:
+                print(delay)
+                return  # Return without inserting into the textbox if dialog didn't set argument and delay
+
+        elif choice == "Type":
+            dialog = KeyType(self)
+            self.wait_window(dialog)  # Wait until the dialog is closed
+
+            # This time I can't use "None" as a sentinel since it can be a valid input, so im using an empty string
+            if hasattr(dialog, "argument") and dialog.argument != "":
                 argument = dialog.argument
                 delay = dialog.delay
             else:
                 return  # Return without inserting into the textbox if dialog didn't set argument and delay
-
-        elif choice == "Type":
-           pass
 
         elif choice == "Keydown" or choice == "Keyup":
             dialog = customtkinter.CTkInputDialog(text="Delay(ms):", title="Left Click")
@@ -278,6 +299,28 @@ class AutomationFrame(customtkinter.CTkFrame):
                 return
             if not self.validate_number(delay):
                 return
+        else:
+            return
+
+
+        self.textbox.configure(state='normal')
+        self.textbox.insert(f"{self.linenumber}.0", str(self.linenumber) + ". Unital -c " + choice + " -a " + argument + " -d " + delay + "\n")  # Insert new content
+        self.linenumber += 1
+        self.textbox.configure(state='disabled')
+
+    def option_menu3_callback(self, choice):
+        print("I pick: ", choice)
+        self.open_input2_dialog_event(choice)
+
+    def open_input3_dialog_event(self, choice):
+        delay = "None"
+        argument = "None"
+
+        if choice == "If":
+            pass
+        elif choice == "For":
+            pass
+            
         else:
             return
 
