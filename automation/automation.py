@@ -7,6 +7,8 @@ import tkinter.filedialog as fd
 from tkinter import messagebox
 from automation.classFiles.mouseClass import MousePositionDialog, MouseScrollDialog
 from automation.classFiles.keyboardClass import KeyStroke, KeyType
+from automation.runAutomation import runAuto
+import pyautogui
 
 class AutomationFrame(customtkinter.CTkFrame):
     def __init__(self, master, *args, **kwargs):
@@ -112,15 +114,18 @@ class AutomationFrame(customtkinter.CTkFrame):
         # Method placeholders for button click events
     def on_record_click(self):
         print("Record button clicked")
-        # Add functionality for record button click here
+        # What this will is make a pre-recorded steps with a different function and call it using unital commands: Unital -c record -file () -d ()
+
 
     def on_smart_click(self):
         print("Smart Click button clicked")
-        # Add functionality for smart click button click here
+        # Need to add in feature
 
     def on_play_click(self):
-        print("Play button clicked")
-        # Add functionality for play button click here
+        pyautogui.moveTo(56, 920, duration=0.5)
+        auto = runAuto(self.textbox.get("0.0", "end"))
+        auto.start_automation()
+
 
     def on_save_click(self):
         # Get the content from the text box or another source
@@ -137,7 +142,7 @@ class AutomationFrame(customtkinter.CTkFrame):
 
     def on_open_click(self):
         # Ask the user to select a file to open
-        file_path = fd.askopenfilename(filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+        file_path = fd.askopenfilename(filetypes=[("Text files", "*.txt")])
 
         # Open and read the file if a path was selected
         if file_path:
