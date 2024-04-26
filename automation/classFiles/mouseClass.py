@@ -94,4 +94,5 @@ class MouseScrollDialog(customtkinter.CTkToplevel):
             print("Scroll Speed:", scrollspeed1)
             print("Delay:", delay)
             print("Argument:", self.argument)
+            self.destroy()
 

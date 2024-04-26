@@ -122,7 +122,6 @@ class AutomationFrame(customtkinter.CTkFrame):
         # Need to add in feature
 
     def on_play_click(self):
-        pyautogui.moveTo(56, 920, duration=0.5)
         auto = runAuto(self.textbox.get("0.0", "end"))
         auto.start_automation()
 

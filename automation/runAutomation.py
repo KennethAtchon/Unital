@@ -89,13 +89,14 @@ class runAuto:
         print(f"Double Click: Argument - {argument}, Delay - {delay}")
 
     def mouse_position_action(self, argument, delay):
-        pattern = r'\(\s*\d+\s*,\s*\d+\s*\)'
-        if re.match(pattern, argument):
+        pattern = r'\(\s*(\d+)\s*,\s*(\d+)\s*\)'
+        match = re.match(pattern, argument)
+        if not match:
             return
         
-        x, y = argument.split(',')
-        x = int(x.strip())
-        y = int(y.strip())
+        x, y = match.groups()
+        x = int(x)
+        y = int(y)
         pyautogui.moveTo(x, y, duration=0.5)
         self.stimulate_delay(delay)
         print(f"Mouse Position: Argument - {argument}, Delay - {delay}")
